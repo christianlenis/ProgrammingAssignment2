@@ -1,49 +1,48 @@
-## Las siguientes funciones almacenan en caché la matríz inverza  
-## y evitan recalcularla cuando esta ya ha sido calculada.
+## The following functions cache the inverse of a matrix  
+## and avoid recalculating it when it has already been computed.
 
-## Esta función crea un "objeto" que graba una matriz 
-## y puede almacenar en caché su inversa.
+## This function creates a "matrix object" that stores a matrix 
+## and can cache its inverse.
 
 makeCacheMatrix <- function(x = matrix()) {
-        inv <- NULL # Variable para almacenar la inversa en caché
+        inv <- NULL # Variable to store the cached inverse
         
-        # Función para actualizar la matriz y reiniciar la caché
+        # Function to update the matrix and reset the cache
         set <- function(y) {
                 x <<- y
                 inv <<- NULL
         }
         
-        # Función para obtener la matriz original
+        # Function to retrieve the original matrix
         get <- function() x
         
-        # Función para almacenar la inversa en caché
+        # Function to store the inverse in the cache
         setinverse <- function(inverse) inv <<- inverse
         
-        # Función para recuperar la inversa almacenada
+        # Function to retrieve the cached inverse
         getinverse <- function() inv
         
-        # Retorna una lista con todas las funciones anteriores
+        # Returns a list with all the above functions
         list(set = set, get = get,
              setinverse = setinverse,
              getinverse = getinverse)
 }
 
-## Esta función calcula la inversa de la matriz almacenada en el objeto 
-## creado por makeCacheMatrix. Si la inversa ya fue calculada 
-## previamente y la matriz no ha cambiado, se recupera el valor 
-## almacenado en caché para evitar el recálculo.
-
+## This function computes the inverse of the matrix stored in the object 
+## created by makeCacheMatrix. If the inverse has already been computed 
+## and the matrix has not changed, the cached value is retrieved 
+## to avoid recomputation.
 
 cacheSolve <- function(x, ...) {
         inv <- x$getinverse()
         
-        # Si la inversa ya fue calculada y está en caché, se retorna
+        # If the inverse is already cached, return it
         if (!is.null(inv)) {
                 message("getting cached data")
                 return(inv)
         }
         
-        # Si no hay inversa en caché, se calcula y almacena
+        # If the inverse is not cached, compute and store it
         data <- x$get()
         inv <- solve(data, ...)
         x$setinverse(inv)
